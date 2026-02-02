@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>bleeee 😋</title>
+
+<style>
+body{
+    margin:0;
+    background:#050510;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+}
+
+/* CANVAS */
+#stars,#water{
+    position:absolute;
+    width:100%;
+    height:100%;
+    z-index:1;
+}
+
+.container{
+    position:relative;
+    z-index:10;
+    text-align:center;
+    opacity:0;
+    transform:translateY(20px);
+    transition:2s ease;
+}
+
+.container.show{
+    opacity:1;
+    transform:translateY(0);
+}
+
+.te-amo{
+    color:#ff2d55;
+    font-size:55px;
+    font-weight:bold;
+    margin-bottom:40px;
+    text-shadow:0 0 20px rgba(255,45,85,0.9);
+    letter-spacing:3px;
+}
+
+#emoji-area{
+    position:relative;
+    width:350px;
+    height:300px;
+    margin:auto;
+}
+
+.heart{
+    position:absolute;
+    color:#ff2d55;
+    font-size:11px;
+    transform:scale(0);
+    animation:appear .5s ease forwards;
+}
+
+@keyframes appear{
+    to{transform:scale(1);}
+}
+
+/* BUNNY */
+.bunny-container{
+    position:absolute;
+    bottom:20px;
+    font-size:50px;
+    z-index:20;
+    filter:drop-shadow(0 0 10px rgba(255,255,255,.3));
+}
+.left-b{left:30px;}
+.right-b{right:30px;}
+</style>
+</head>
+
+<body>
+
+<canvas id="stars"></canvas>
+<canvas id="water"></canvas>
+
+<div class="container" id="content">
+    <div class="te-amo">vel kicik bleeee</div>
+    <div id="emoji-area"></div>
+</div>
+
+<div class="bunny-container left-b">🐰</div>
+<div class="bunny-container right-b">🐰</div>
+
+<script>
+// ================= STAR (FALLING) =================
+const starCanvas = document.getElementById('stars');
+const sctx = starCanvas.getContext('2d');
+let stars=[];
+
+function initStars(){
+    starCanvas.width=innerWidth;
+    starCanvas.height=innerHeight;
+    stars=[];
+    for(let i=0;i<180;i++){
+        stars.push({
+            x:Math.random()*innerWidth,
+            y:Math.random()*innerHeight,
+            r:Math.random()*2,
+            v:0.5+Math.random()*1.5,
+            o:0.4+Math.random()*0.6
+        });
+    }
+}
+function animateStars(){
+    sctx.clearRect(0,0,innerWidth,innerHeight);
+    stars.forEach(st=>{
+        st.y+=st.v;
+        if(st.y>innerHeight){
+            st.y=-5;
+            st.x=Math.random()*innerWidth;
+        }
+        sctx.fillStyle=`rgba(255,255,255,${st.o})`;
+        sctx.beginPath();
+        sctx.arc(st.x,st.y,st.r,0,Math.PI*2);
+        sctx.fill();
+    });
+    requestAnimationFrame(animateStars);
+}
+initStars();
+animateStars();
+
+// ================= WATER =================
+const water=document.getElementById('water');
+const wctx=water.getContext('2d');
+water.width=innerWidth;
+water.height=innerHeight;
+
+let drops=[];
+let waterInterval;
+
+const leftBunny={x:60,y:innerHeight-60};
+const rightBunny={x:innerWidth-60,y:innerHeight-60};
+
+function createDrop(src){
+    return{
+        x:src.x+Math.random()*20-10,
+        y:src.y,
+        vx:(innerWidth/2-src.x)/140+(Math.random()-.5),
+        vy:-3-Math.random()*2,
+        life:0,
+        max:120
+    }
+}
+
+function spawnWater(){
+    for(let i=0;i<6;i++){
+        drops.push(createDrop(leftBunny));
+        drops.push(createDrop(rightBunny));
+    }
+}
+
+function animateWater(){
+    wctx.clearRect(0,0,innerWidth,innerHeight);
+    drops.forEach((d,i)=>{
+        d.x+=d.vx;
+        d.y+=d.vy;
+        d.life++;
+        wctx.fillStyle=`rgba(120,180,255,${1-d.life/d.max})`;
+        wctx.beginPath();
+        wctx.arc(d.x,d.y,3,0,Math.PI*2);
+        wctx.fill();
+        if(d.life>d.max)drops.splice(i,1);
+    });
+    requestAnimationFrame(animateWater);
+}
+animateWater();
+
+// ================= EMOJI DRAW =================
+const area=document.getElementById('emoji-area');
+
+function drawHeart(x,y,d){
+    const h=document.createElement('div');
+    h.className='heart';
+    h.innerHTML='❤️';
+    h.style.left=x+'px';
+    h.style.top=y+'px';
+    h.style.animationDelay=d+'s';
+    area.appendChild(h);
+}
+
+function drawEmoji(){
+    area.innerHTML='';
+    // mata
+    function eye(o){
+        for(let r=0;r<4;r++){
+            for(let c=0;c<=r;c++){
+                drawHeart(o+(c*14)-(r*7),r*12,r*.1);
+            }
+        }
+    }
+    eye(100);
+    eye(250);
+
+    // mulut
+    for(let i=0;i<35;i++){
+        drawHeart(50+i*8,110+Math.pow(i-17.5,2)*.2,.6+i*.02);
+    }
+
+    // lidah
+    for(let i=0;i<6;i++){
+        for(let j=0;j<8;j++){
+            drawHeart(185+j*6+i*4,155+i*10,1.5+i*.1);
+        }
+    }
+    for(let k=0;k<5;k++){
+        drawHeart(215+k*8,215,2);
+    }
+}
+
+// ================= LOOP CONTROL =================
+function startScene(){
+    drops=[];
+    area.innerHTML='';
+    document.getElementById('content').classList.remove('show');
+
+    waterInterval=setInterval(spawnWater,80);
+
+    setTimeout(()=>{
+        drawEmoji();
+        document.getElementById('content').classList.add('show');
+        clearInterval(waterInterval);
+    },2500);
+}
+
+startScene();
+setInterval(startScene,6000);
+
+window.onresize=()=>location.reload();
+</script>
+
+</body>
+</html>

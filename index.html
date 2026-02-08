@@ -149,9 +149,9 @@ body{
 <div class="video-popup" id="videoPopup">
     <div class="video-box">
         <div class="close-btn" onclick="closeVideo()">✖</div>
-<video id="myVideo" autoplay loop muted playsinline>
-    <source src="vel.mp4" type="video/mp4">
-</video>
+        <video id="myVideo" controls>
+            <source src="vel.mp4" type="video/mp4">
+        </video>
     </div>
 </div>
 
@@ -288,19 +288,8 @@ setInterval(startScene,6000);
 
 // VIDEO CONTROL
 function openVideo(){
-
-    const vid = document.getElementById('myVideo');
-
     document.getElementById('videoPopup').classList.add('show');
-
-    // aktifkan suara setelah user klik
-    vid.muted = false;
-    vid.currentTime = 0;
-
-    vid.play().catch(()=>{});
 }
-
-
 function closeVideo(){
     document.getElementById('videoPopup').classList.remove('show');
     document.getElementById('myVideo').pause();
@@ -311,5 +300,3 @@ window.onresize=()=>location.reload();
 
 </body>
 </html>
-
-

@@ -288,8 +288,18 @@ setInterval(startScene,6000);
 
 // VIDEO CONTROL
 function openVideo(){
+
+    const vid = document.getElementById('myVideo');
+
     document.getElementById('videoPopup').classList.add('show');
+
+    vid.muted = false;   // pastikan suara aktif
+    vid.volume = 1;      // full volume
+    vid.currentTime = 0;
+
+    vid.play().catch(()=>{});
 }
+
 function closeVideo(){
     document.getElementById('videoPopup').classList.remove('show');
     document.getElementById('myVideo').pause();
@@ -300,3 +310,4 @@ window.onresize=()=>location.reload();
 
 </body>
 </html>
+
